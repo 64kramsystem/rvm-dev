@@ -31,8 +31,18 @@ rubinius_install_detect_required_ruby()
       esac
       ;;
 
-    (*)
+    (3*)
       ruby="ruby-2.3.1"
+      ;;
+
+    # This has been tested with recent 4.* and 5.0 versions. It's possible that
+    # older Rubinius versions may be compatible too, and also that older/newer
+    # Ruby versions may build Rubinius, so this version is somewhat arbitrary.
+    # There are significant consequences to using a modern version; Ruby 2.3 is
+    # troublesome to install on modern machines, due to the old libssl version
+    # required.
+    (*)
+      ruby="ruby-2.7"
       ;;
   esac
 
