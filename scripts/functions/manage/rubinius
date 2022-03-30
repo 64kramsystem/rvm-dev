@@ -119,6 +119,7 @@ rubinius_install()
 
   __rvm_cd "${rvm_src_path}/$rvm_ruby_string"
 
+  # This is not required in recent versions, but possibly is on older ones.
   chmod +x ./configure
 
   __rvm_apply_patches ||
@@ -149,9 +150,24 @@ rubinius_install()
   then
     chmod 600 "$HOME/.gem/credentials"
   fi
-  __rvm_log_command "configure" "$rvm_ruby_string - #configuring" \
-    env "${rvm_configure_env[@]}" $rvm_wrappers_path/$ruby/ruby ./configure "${rvm_configure_flags[@]}" ||
-    return $?
+
+  # Rubinius' standard workflow is to invoke build.sh (invoking the configscript
+  # directly is deprecated), however, RVM splits the configure stage from the
+  # build one.
+  if __rvm_version_compare ${rvm_ruby_version} -ge 4.6
+  then
+    # On 4.6+, configure is now a wrapper around the old configscript (now
+    # `configure.rb`), that additionally cleans (make clean) the the libraries.
+    # There's no need to pass the env configuration, since it's set by the
+    # configscript.
+    __rvm_log_command "configure" "$rvm_ruby_string - #configuring" \
+      $rvm_wrappers_path/$ruby/ruby ./configure.rb "${rvm_configure_flags[@]}" ||
+      return $?
+  else
+    __rvm_log_command "configure" "$rvm_ruby_string - #configuring" \
+      env "${rvm_configure_env[@]}" $rvm_wrappers_path/$ruby/ruby ./configure "${rvm_configure_flags[@]}" ||
+      return $?
+  fi
 
   if [[ -n "${rvm_configure_args:-}" ]]
   then rvm_ruby_make="CONFIGURE_ARGS=${rvm_configure_args## } "
