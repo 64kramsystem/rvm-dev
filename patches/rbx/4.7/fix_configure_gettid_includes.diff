@@ -1,0 +1,15 @@
+diff --git c/configure.rb i/configure.rb
+index 07333a2ae7..403f43472e 100755
+--- c/configure.rb
++++ i/configure.rb
+@@ -1295,7 +1295,9 @@ def detect_functions
+       @defines << "HAVE_INOTIFY"
+     end
+ 
+-    if has_function("gettid", ["unistd.d", "sys/types.h"])
++    # On Linux systems providing gettid() (Glibc 2.30+), the header is `unistd.h`.
++    #
++    if has_function("gettid", ["unistd.d", "sys/types.h"]) || has_function("gettid", ["unistd.h"])
+       @defines << "HAVE_GETTID"
+     end
+ 
