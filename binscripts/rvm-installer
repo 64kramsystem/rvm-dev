@@ -608,13 +608,13 @@ rvm_install_parse_params()
               ;;
             (*/)
               branch=master
-              if [[ "${1%/}" -ne rvm ]] && [[ "${1%/}" -ne mpapis ]]
+              if [[ "${1%/}" != rvm ]] && [[ "${1%/}" != mpapis ]]
               then sources=(github.com/${1%/}/rvm)
               fi
               ;;
             (*/*)
               branch=${1#*/}
-              if [[ "${1%%/*}" -ne rvm ]] && [[ "${1%%/*}" -ne mpapis ]]
+              if [[ "${1%%/*}" != rvm ]] && [[ "${1%%/*}" != mpapis ]]
               then sources=(github.com/${1%%/*}/rvm)
               fi
               ;;
